@@ -1,0 +1,12 @@
+{
+  // VS Code n'hérite pas du PATH du shell quand il est lancé depuis le Dock/Spotlight,
+  // donc l'extension Go ne retrouve pas le binaire "go" installé via Homebrew.
+  // Ces chemins absolus contournent le problème indépendamment du PATH hérité.
+  "go.goroot": "/opt/homebrew/opt/go/libexec",
+  "go.alternateTools": {
+    "go": "/opt/homebrew/bin/go"
+  },
+  "go.toolsEnvVars": {
+    "PATH": "/opt/homebrew/bin:/Users/Hugotestas/go/bin:${env:PATH}"
+  }
+}
