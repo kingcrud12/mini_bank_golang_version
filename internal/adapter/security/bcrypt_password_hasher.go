@@ -15,7 +15,7 @@ func NewBcryptPasswordHasher() *BcryptPasswordHasher {
 func (h *BcryptPasswordHasher) Hash(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("Erreur lors du hachage du mot de mot de passe: %v", err)
+		return "", fmt.Errorf("Erreur lors du hachage du mot de mot de passe: %w", err)
 	}
 	return string(hashed), nil
 }

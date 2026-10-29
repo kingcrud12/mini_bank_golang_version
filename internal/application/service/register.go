@@ -27,7 +27,7 @@ func (s *RegisterService) Register(user dto.CustomerRegigestRequestDTO) (*model.
 	passwordHasher, err := s.passwordHasher.Hash(user.Password)
 
 	if err != nil {
-		return nil, fmt.Errorf("Erreur lors du hachage du mot de passe %w", err)
+		return nil, model.ErrHashPasswordFailed
 	}
 	user.Password = passwordHasher
 

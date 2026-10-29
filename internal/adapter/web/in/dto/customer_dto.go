@@ -23,3 +23,9 @@ type CustomerLoginResponseDTO struct {
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 }
+
+type CustomerProfileResponseDTO struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+}

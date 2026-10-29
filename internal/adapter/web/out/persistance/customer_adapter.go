@@ -39,6 +39,19 @@ func (a *CustomerAdapter) FindByEmail(email string) (*model.Customer, error) {
 	return entity.ToDomain(), nil
 }
 
+func (a *CustomerAdapter) FindByID(id string) (*model.Customer, error) {
+	var entity CustomerEntity
+
+	if err := a.db.Where("id = ?", id).First(&entity).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return entity.ToDomain(), nil
+}
+
 func (a *CustomerAdapter) ExistsByEmail(email string) bool {
 	var count int64
 

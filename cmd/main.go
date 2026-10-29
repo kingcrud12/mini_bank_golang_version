@@ -4,6 +4,7 @@ import (
 	"learn_go_with_api/internal/adapter/security"
 	webconfig "learn_go_with_api/internal/adapter/web/config"
 	"learn_go_with_api/internal/adapter/web/in/controllers"
+	"learn_go_with_api/internal/adapter/web/in/middleware"
 	"learn_go_with_api/internal/adapter/web/out/persistance"
 	"learn_go_with_api/internal/adapter/web/out/persistance/config"
 	"learn_go_with_api/internal/application/service"
@@ -26,12 +27,18 @@ func main() {
 
 	registerService := service.NewRegisterService(customerRepository, passwordHasher)
 	loginService := service.NewLoginService(customerRepository, passwordHasher, tokenGenerator)
+	getProfileService := service.NewGetProfileService(customerRepository)
 
 	authController := controllers.NewAuthController(registerService, loginService, jwtConfig)
+	profileController := controllers.NewProfileController(getProfileService)
 
 	router := gin.Default()
 	router.POST("/register", authController.RegisterController)
 	router.POST("/login", authController.LoginController)
+
+	authorized := router.Group("/")
+	authorized.Use(middleware.AuthMiddleware(tokenGenerator, jwtConfig))
+	authorized.GET("/profile", profileController.GetProfileController)
 
 	if err := router.Run(); err != nil {
 		log.Fatal(err)

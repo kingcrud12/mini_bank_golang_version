@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"learn_go_with_api/internal/adapter/web/config"
+	"learn_go_with_api/internal/domain/model"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -29,4 +30,21 @@ func (g *JWTTokenGenerator) Generate(customerID string, email string) (string, e
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString(g.config.Secret)
+}
+
+func (g *JWTTokenGenerator) Validate(tokenString string) (string, error) {
+	claims := &jwt.RegisteredClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, model.ErrInvalidToken
+		}
+		return g.config.Secret, nil
+	})
+
+	if err != nil || !token.Valid {
+		return "", model.ErrInvalidToken
+	}
+
+	return claims.Subject, nil
 }
